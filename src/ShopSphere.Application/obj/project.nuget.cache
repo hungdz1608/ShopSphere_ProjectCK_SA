@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "ZfFC+FzOpQM=",
+  "success": true,
+  "projectFilePath": "D:\\University\\SOFTWARE_ARCHITECTURE\\ShopSphere\\ShopSphere.Application\\ShopSphere.Application.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\ACER\\.nuget\\packages\\fluentvalidation\\12.1.0\\fluentvalidation.12.1.0.nupkg.sha512"
+  ],
+  "logs": []
+}

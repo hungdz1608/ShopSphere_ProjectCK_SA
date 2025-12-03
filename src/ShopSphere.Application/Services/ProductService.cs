@@ -1,3 +1,4 @@
+using ShopSphere.Application.Messaging;
 using ShopSphere.Application.Repositories;
 using ShopSphere.Domain.Entities;
 using ShopSphere.Domain.Errors;
@@ -9,11 +10,13 @@ public class ProductService
 {
     private readonly IProductRepository _productRepo;
     private readonly ICategoryRepository _categoryRepo;
+    private readonly IEventPublisher _publisher;
 
-    public ProductService(IProductRepository productRepo, ICategoryRepository categoryRepo)
+    public ProductService(IProductRepository productRepo, ICategoryRepository categoryRepo, IEventPublisher publisher)
     {
         _productRepo = productRepo;
         _categoryRepo = categoryRepo;
+        _publisher = publisher;
     }
 
     private static string Slugify(string input)
@@ -49,7 +52,16 @@ public class ProductService
             CategoryId = categoryId
         };
 
-        return await _productRepo.AddAsync(product);
+        var created = await _productRepo.AddAsync(product);
+        await _publisher.PublishAsync("product.created", new
+        {
+            created.Id,
+            created.Name,
+            created.Price,
+            created.Stock,
+            created.CategoryId
+        });
+        return created;
     }
 
     public async Task<(List<Product> Items, int Total)> GetPagedFilteredAsync(
@@ -96,6 +108,15 @@ public class ProductService
         p.UpdatedAt = DateTime.UtcNow;
 
         await _productRepo.UpdateAsync(p);
+        await _publisher.PublishAsync("product.updated", new
+        {
+            p.Id,
+            p.Name,
+            p.Price,
+            p.Stock,
+            p.CategoryId,
+            p.UpdatedAt
+        });
         return p;
     }
 
@@ -103,5 +124,11 @@ public class ProductService
     {
         var p = await GetByIdAsync(id);
         await _productRepo.DeleteAsync(p);
+        await _publisher.PublishAsync("product.deleted", new
+        {
+            p.Id,
+            p.Name,
+            p.CategoryId
+        });
     }
 }

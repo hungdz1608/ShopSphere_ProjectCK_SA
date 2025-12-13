@@ -11,7 +11,8 @@ using ShopSphere.Application.Services;
 namespace ShopSphere.Api.Controllers;
 
 [ApiController]
-[Route("products")]
+[ApiVersion("1.0")]
+[Route("v1/products")]
 public class ProductsController : ControllerBase
 {
     private readonly ProductService _service;

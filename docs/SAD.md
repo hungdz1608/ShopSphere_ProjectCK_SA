@@ -159,3 +159,12 @@ ERD chi tiết được cung cấp trong `docs/erd.png`.
 - Working CRUD code:
   - Product CRUD
   - Category CRUD
+
+---
+
+## 10. Submission 3 Additions (Reliability & Async)
+- **API versioning**: all controllers annotated with `[ApiVersion("1.0")]` and routes are served under `/v1/*`.
+- **Outbox pattern**: `OutboxEventPublisher` writes events into `OutboxMessages` (same DB transaction as domain writes). Worker polls and publishes to RabbitMQ.
+- **Saga flow**: checkout creates `Order` + `Payment` + `order.created` event; worker consumer finishes payment and emits `payment.completed`.
+- **Idempotency**: `ProcessedMessages` tracks handled RabbitMQ `MessageId` values to skip duplicates.
+- **Background worker**: `OutboxDispatcher` + `OrderPaymentConsumer` run in `ShopSphere.Worker` project, sharing the same SQL + RabbitMQ configuration.

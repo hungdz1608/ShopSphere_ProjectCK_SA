@@ -7,4 +7,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ShopSphere.Infrastructure\ShopSphere.Infrastructure.csproj" />
+    <ProjectReference Include="..\ShopSphere.Application\ShopSphere.Application.csproj" />
+  </ItemGroup>
+
 </Project>

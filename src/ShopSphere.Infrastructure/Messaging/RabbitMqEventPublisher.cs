@@ -26,7 +26,7 @@ public class RabbitMqEventPublisher : IEventPublisher, IDisposable
         _channel.ExchangeDeclare(exchange: _options.Exchange, type: ExchangeType.Topic, durable: true);
     }
 
-    public Task PublishAsync(string eventName, object payload)
+    public Task PublishAsync(string eventName, object payload, string? messageId = null)
     {
         var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new
         {
@@ -35,10 +35,14 @@ public class RabbitMqEventPublisher : IEventPublisher, IDisposable
             data = payload
         }));
 
+        var props = _channel.CreateBasicProperties();
+        props.MessageId = string.IsNullOrWhiteSpace(messageId) ? Guid.NewGuid().ToString() : messageId;
+        props.ContentType = "application/json";
+
         _channel.BasicPublish(
             exchange: _options.Exchange,
             routingKey: eventName,
-            basicProperties: null,
+            basicProperties: props,
             body: body
         );
 

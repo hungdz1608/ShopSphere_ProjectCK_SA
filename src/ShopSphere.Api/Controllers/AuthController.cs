@@ -7,7 +7,8 @@ using ShopSphere.Application.Authentication;
 namespace ShopSphere.Api.Controllers;
 
 [ApiController]
-[Route("auth")]
+[ApiVersion("1.0")]
+[Route("v1/auth")]
 public class AuthController : ControllerBase
 {
     private readonly IUserStore _userStore;
